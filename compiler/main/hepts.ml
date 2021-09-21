@@ -318,7 +318,7 @@ let usage_msg = "Usage: " ^
   Sys.executable_name ^ " -mod <Module> -node <node> -exec <exec> [OPTION]...\n" ^
 "       " ^  Sys.executable_name ^ " -sig <file>.epci -node <node> -exec <exec> [OPTION]..."
 and doc_sig  = "<file>.epci\tCompiled interface containing node <node> (for backward compatibility)"
-and doc_mod  = "<Module>\tModule containing node <node>"
+and doc_mod  = "<Module>\tModule containing node <node>. Needs to be capitalized."
 and doc_node = "<node>\tName of simulated node"
 and doc_exec = "<exec>\tSimulation executable"
 and doc_sim2chro = "\tOutput to the sim2chro chronogram viewer tool (by default)"
@@ -363,7 +363,10 @@ let main () =
     (fun s -> raise (Arg.Bad ("Invalid argument: " ^ s)))
     usage_msg;
 
-  if (!mod_name = "") || (!node_name = "") || (!exec_name = "") then
+  let is_capitalised s =
+    Char.uppercase_ascii s.[0] = s.[0]
+  in
+  if (!mod_name = "") || not @@ is_capitalised !mod_name || (!node_name = "") || (!exec_name = "") then
     begin
       Arg.usage arg_list usage_msg;
       raise Errors.Error
